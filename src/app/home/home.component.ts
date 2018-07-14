@@ -12,16 +12,11 @@ values: any ;
   constructor(private http: Http) { }
 
   ngOnInit() {
-    this.GetValue();
   }
 registerToggle() {
   this.registerMode = true ;
 }
-GetValue() {
-  this.http.get('http://localhost:50913/api/values').subscribe( Response => {
-    this.values = Response.json();
-  });
-}
+
 cancelRegisterMode(registerMode: boolean) { // part 4
 this.registerMode = registerMode;
 }

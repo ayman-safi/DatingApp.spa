@@ -8,7 +8,13 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
-
+import { AlertifyService } from './_services/alertify.service';
+import { JwtModule } from '@auth0/angular-jwt';
+import { HttpClientModule } from '@angular/common/http';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+export function tokenGetter() {
+    return localStorage.getItem('tokenstring');
+  }
 @NgModule({
    declarations: [
       AppComponent,
@@ -19,10 +25,20 @@ import { RegisterComponent } from './register/register.component';
    imports: [
       BrowserModule,
       HttpModule,
-      FormsModule
+      FormsModule,
+      HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:4200'],
+        blacklistedRoutes: ['localhost:4200/auth/']
+      }
+    }),
+    BsDropdownModule.forRoot()
    ],
    providers: [
-      AuthService
+      AuthService,
+      AlertifyService
    ],
    bootstrap: [
       AppComponent
