@@ -12,7 +12,7 @@ export class AuthService {
 baseUrl = 'http://localhost:50913/api/auth/';
 userToken: any;
 
-constructor(private http: Http, public jwtHelper: JwtHelperService) {
+constructor(private http: Http) {
 
  }
 login(model: any) { // nav component
@@ -29,7 +29,8 @@ register(model: any) {
 
 
  loggedIn() {
-   return this.jwtHelper.isTokenExpired() ;
+  const token = localStorage.getItem('token');
+  return !! token;
  }
 
 private requestOption() {
