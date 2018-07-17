@@ -9,13 +9,13 @@ import { AuthGuard } from './_guards/auth.guard';
 export const appRoute: Routes = [
     { path: 'home', component: HomeComponent},
     {
-        path : '',
-        runGuardsAndResolvers : 'always',
-        canActivate : [AuthGuard],
-        children : [
+        path: '',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AuthGuard],
+        children: [
+            { path: 'members', component: MemberListComponent },
+            { path: 'messages', component: MessagesComponent},
             { path: 'lists', component: ListsComponent},
-            { path: 'members', component: MemberListComponent},
-            { path: 'messages', component: MessagesComponent}
         ]
     },
     { path: '**', redirectTo : 'home' , pathMatch: 'full'},
