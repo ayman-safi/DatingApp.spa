@@ -1,8 +1,8 @@
-import { RegisterComponent } from './../register/register.component';
+import { RegisterComponent } from '../register/register.component';
 import { Injectable } from '@angular/core';
 import { Http, RequestOptions , Headers , Response } from '@angular/http';
 import {map, catchError} from 'rxjs/operators';
-import { throwError } from '../../../node_modules/rxjs';
+import { throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
@@ -15,16 +15,24 @@ userToken: any;
 constructor(private http: Http) {
 
  }
-login(model: any) { // nav component
-  return this.http.post(this.baseUrl + 'login', model , this.requestOption()).pipe( map( (response: Response) => {
+ public getToken(): string {
+  return localStorage.getItem('token');
+}
+
+login(model: any) {
+   // nav component
+  return this.http.post(this.baseUrl + 'login', model , this.requestOption())
+  .pipe( map( (response: Response) => {
     const user = response.json();
     if (user && user.tokenString) {
     localStorage.setItem('token', user.tokenString);
   }
 }), catchError(this.handlerError));
 }
+
 register(model: any) {
-  return this.http.post(this.baseUrl + 'register', model , this.requestOption()).pipe(catchError(this.handlerError));
+  return this.http.post(this.baseUrl + 'register', model , this.requestOption())
+  .pipe(catchError(this.handlerError));
 }
 
 
@@ -32,28 +40,30 @@ register(model: any) {
   const token = localStorage.getItem('token');
   return !! token;
  }
-
+ logout() {
+  // remove user from local storage to log user out
+  localStorage.removeItem('currentUser');
+}
 private requestOption() {
   const headers = new Headers({ 'Content-type': 'application/json' });
   return new RequestOptions({headers : headers});
 }
+
 // the error handler
 private handlerError(error: any) {
- const applicationError = error.headers.get('Application-Error');
- if (applicationError) {
+  const applicationError = error.headers.get('Application-Error');
+  if (applicationError) {
   return throwError (applicationError);
- }
- const serverError = error.json();
- let modelStateErrors = '';
- if (serverError) {
+  }
+  const serverError = error.json();
+  let modelStateErrors = '';
+  if (serverError) {
    for (const key in serverError) {
      if (serverError[key]) {
        modelStateErrors += serverError[key] + '\n';
      }
    }
  }
- return throwError(
-  modelStateErrors || 'Server error'
-);
+ return throwError(modelStateErrors || 'Server error');
 }
 }

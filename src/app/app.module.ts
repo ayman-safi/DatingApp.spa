@@ -1,5 +1,6 @@
+import { UserService } from './_services/user.service';
 import { MessagesComponent } from './messages/messages.component';
-import { MemberListComponent } from './member-list/member-list.component';
+import { MemberListComponent } from './members/member-list/member-list.component';
 import { ListsComponent } from './lists/lists.component';
 import { appRoute } from './route';
 import { AuthService } from './_services/auth.service';
@@ -14,13 +15,16 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { AlertifyService } from './_services/alertify.service';
 import { JwtModule } from '@auth0/angular-jwt';
-import { HttpClientModule } from '@angular/common/http';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { RouterModule } from '../../node_modules/@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { BsDropdownModule, TabsModule } from 'ngx-bootstrap';
+import { RouterModule } from '@angular/router';
 import { AuthGuard } from './_guards/auth.guard';
-export function tokenGetter() {
-    return localStorage.getItem('tokenstring');
-  }
+import { TokenInterceptor } from './interceptors/TokenInterceptor';
+import { MemberCardComponent } from './members/member-card/member-card.component';
+import { MemberDetailsComponent } from './members/member-details/member-details.component';
+
+
+
 @NgModule({
    declarations: [
       AppComponent,
@@ -30,6 +34,8 @@ export function tokenGetter() {
       ListsComponent,
       MemberListComponent,
       MessagesComponent,
+      MemberCardComponent,
+      MemberDetailsComponent
    ],
    imports: [
       BrowserModule,
@@ -37,12 +43,20 @@ export function tokenGetter() {
       FormsModule,
       HttpClientModule,
     BsDropdownModule.forRoot(),
-    RouterModule.forRoot(appRoute)
+    TabsModule.forRoot(),
+    RouterModule.forRoot(appRoute),
    ],
    providers: [
       AuthService,
       AlertifyService,
-      AuthGuard
+      AuthGuard,
+      UserService,
+      // send our information in the header wirh HTTP_INTERCEPTORS
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: TokenInterceptor,
+        multi: true
+      }
    ],
    bootstrap: [
       AppComponent
