@@ -1,3 +1,5 @@
+import { MemberDetailResolver } from './_resolvers/member-details.resolver';
+import { MemberListResolver } from './_resolvers/member-list.resolver';
 
 import { ListsComponent } from './lists/lists.component';
 import { MessagesComponent } from './messages/messages.component';
@@ -14,8 +16,8 @@ export const appRoute: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [AuthGuard],
         children: [
-            { path: 'members', component: MemberListComponent },
-            { path: 'members/:id', component: MemberDetailsComponent, },
+            { path: 'members', component: MemberListComponent, resolve: {users: MemberListResolver} },
+            { path: 'members/:id', component: MemberDetailsComponent, resolve: {user: MemberDetailResolver} },
             { path: 'messages', component: MessagesComponent},
             { path: 'lists', component: ListsComponent},
         ]

@@ -1,3 +1,4 @@
+import { MemberDetailResolver } from './_resolvers/member-details.resolver';
 import { UserService } from './_services/user.service';
 import { MessagesComponent } from './messages/messages.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
@@ -9,6 +10,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule} from '@angular/http';
 import { AppComponent } from './app.component';
+import { NgxGalleryModule } from 'ngx-gallery';
 
 import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
@@ -22,6 +24,7 @@ import { AuthGuard } from './_guards/auth.guard';
 import { TokenInterceptor } from './interceptors/TokenInterceptor';
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { MemberDetailsComponent } from './members/member-details/member-details.component';
+import { MemberListResolver } from './_resolvers/member-list.resolver';
 
 
 
@@ -35,15 +38,19 @@ import { MemberDetailsComponent } from './members/member-details/member-details.
       MemberListComponent,
       MessagesComponent,
       MemberCardComponent,
-      MemberDetailsComponent
+      MemberDetailsComponent,
+      MemberListComponent,
    ],
    imports: [
       BrowserModule,
       HttpModule,
       FormsModule,
       HttpClientModule,
+      // ngx
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    NgxGalleryModule,
+    //
     RouterModule.forRoot(appRoute),
    ],
    providers: [
@@ -56,7 +63,9 @@ import { MemberDetailsComponent } from './members/member-details/member-details.
         provide: HTTP_INTERCEPTORS,
         useClass: TokenInterceptor,
         multi: true
-      }
+      },
+      MemberListResolver,
+      MemberDetailResolver
    ],
    bootstrap: [
       AppComponent
